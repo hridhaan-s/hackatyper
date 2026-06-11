@@ -4,87 +4,119 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>HackaTyper — Hack Club</title>
+
+<link rel="icon" type="image/png" href="https://assets.hackclub.com/icon-rounded.png"/>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#000;min-height:100vh;font-family:'Courier New',Courier,monospace;display:flex;flex-direction:column}
-#wrap{background:#000;padding:1.5rem 1rem;max-width:760px;margin:0 auto;width:100%;flex:1}
-.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a}
-.logo{font-size:22px;font-weight:700;color:#00ff41;letter-spacing:0.05em}
-.logo span{color:#555;font-weight:400;font-size:11px;display:block;letter-spacing:0.15em;margin-top:3px;text-transform:uppercase}
-#streak-area{font-size:12px;color:#444;font-family:'Courier New',monospace}
-.tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid #222;border-radius:6px;overflow:hidden}
-.tab{flex:1;padding:9px 0;font-size:12px;font-family:'Courier New',monospace;background:transparent;color:#555;border:none;cursor:pointer;border-right:1px solid #222;letter-spacing:0.05em;transition:.15s;text-transform:uppercase;font-weight:700}
-.tab:last-child{border-right:none}
-.tab.on{background:#00ff41;color:#000}
+html,body{background:#050505;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";display:flex;flex-direction:column;color:#fff}
+#wrap{background:#050505;padding:1.5rem 1rem;max-width:760px;margin:0 auto;width:100%;flex:1}
+
+/* Brand Header with dynamic CSS Hack Club Flag */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a;position:relative;padding-left:70px}
+.hc-flag {position:absolute;left:0;top:-24px;width:56px;height:48px;background:#ec3750;border-bottom-left-radius:8px;border-bottom-right-radius:8px;transition:transform 0.2s ease-in-out;transform-origin:top center;display:flex;align-items:center;justify-content:center}
+.hc-flag:hover {transform:rotate(5deg) scale(1.05)}
+.hc-flag-icon {width:32px;height:32px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.logo{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.02em;font-family:inherit}
+.logo em{color:#ec3750;font-style:normal}
+.logo span{color:#8492a6;font-weight:500;font-size:12px;font-family:'Courier New',monospace;display:block;letter-spacing:0.05em;margin-top:2px;text-transform:none}
+
+#streak-area{font-size:12px;color:#8492a6;font-family:'Courier New',monospace;font-weight:700}
+
+/* Navigation Tabs styled around Hack Club design guidelines */
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem}
+.tab{flex:1;padding:10px 0;font-size:13px;font-family:'Courier New',monospace;background:#17171d;color:#8492a6;border:1px solid #252529;border-radius:6px;cursor:pointer;letter-spacing:0.05em;transition:.15s;text-transform:uppercase;font-weight:700}
+.tab:hover{border-color:#ec3750;color:#fff}
+.tab.on{background:#ec3750;color:#fff;border-color:#ec3750;box-shadow:0 0 12px rgba(236,55,80,0.25)}
+
+/* Statistics panels */
 .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
-.sc{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:14px 12px;text-align:center}
-.sc-lbl{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
-.sc-val{font-size:28px;font-weight:700;color:#fff;font-family:'Courier New',monospace;line-height:1}
-.sc-val.green{color:#00ff41}
-.sc-val.red{color:#ff4444}
-.prog-wrap{height:3px;background:#111;border-radius:2px;margin-bottom:1.5rem;overflow:hidden}
-.prog-fill{height:100%;background:#00ff41;border-radius:2px;transition:width .1s linear;width:0%}
-.orpheus{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1px solid #1a1a1a;border-radius:6px;background:#0a0a0a;margin-bottom:1rem}
-.orpheus img{width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;border:1px solid #1a1a1a}
-.orpheus-txt{font-size:12px;color:#444;font-family:'Courier New',monospace;line-height:1.7;padding-top:4px}
-.orpheus-txt strong{color:#00ff41;font-weight:700}
-.typing-box{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:1.5rem;margin-bottom:1.25rem}
+.sc{background:#17171d;border:1px solid #252529;border-radius:8px;padding:14px 12px;text-align:center}
+.sc-lbl{font-size:10px;color:#8492a6;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;font-weight:700}
+.sc-val{font-size:28px;font-weight:800;color:#fff;font-family:'Courier New',monospace;line-height:1}
+.sc-val.green{color:#33d268}
+.sc-val.red{color:#ec3750}
+
+.prog-wrap{height:4px;background:#17171d;border-radius:2px;margin-bottom:1.5rem;overflow:hidden}
+.prog-fill{height:100%;background:#ec3750;border-radius:2px;transition:width .1s linear;width:0%}
+
+/* Mascot Area */
+.orpheus{display:flex;gap:14px;align-items:center;padding:14px 16px;border:1px solid #252529;border-radius:8px;background:#17171d;margin-bottom:1rem}
+.orpheus img{width:42px;height:42px;border-radius:50%;flex-shrink:0;object-fit:cover;border:2px solid #ec3750}
+.orpheus-txt{font-size:13px;color:#c5d1e0;font-family:'Courier New',monospace;line-height:1.5}
+.orpheus-txt strong{color:#ec3750;font-weight:700}
+
+/* Text prompt mechanics */
+.typing-box{background:#17171d;border:1px solid #252529;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
 .ctrl-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
 .diff-pills{display:flex;gap:6px}
-.dp{padding:5px 14px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
-.dp.on{background:#00ff41;color:#000;border-color:#00ff41}
-.dp:hover:not(.on){border-color:#555;color:#aaa}
+.dp{padding:6px 14px;border-radius:6px;border:1px solid #252529;background:#252529;color:#8492a6;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.dp.on{background:#33d268;color:#000;border-color:#33d268;box-shadow:0 0 8px rgba(51,210,104,0.3)}
+.dp:hover:not(.on){border-color:#8492a6;color:#fff}
 .right-ctrls{display:flex;align-items:center;gap:6px}
-.dur-btn{padding:5px 12px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.dur-btn{padding:6px 12px;border-radius:6px;border:1px solid #252529;background:#252529;color:#8492a6;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
 .dur-btn.on{background:#fff;color:#000;border-color:#fff}
-.dur-btn:hover:not(.on){border-color:#555;color:#aaa}
-.new-btn{padding:5px 12px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
-.new-btn:hover{border-color:#555;color:#aaa}
+.dur-btn:hover:not(.on){border-color:#8492a6;color:#fff}
+.new-btn{padding:6px 12px;border-radius:6px;border:1px solid #252529;background:transparent;color:#8492a6;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.new-btn:hover{border-color:#ec3750;color:#ec3750}
+
 #prompt-display{font-size:20px;line-height:2.1;font-family:'Courier New',monospace;word-break:break-word;user-select:none;margin-bottom:1.25rem;min-height:88px}
-#prompt-display .done{color:#00ff41}
-#prompt-display .err{color:#ff4444;text-decoration:underline;text-underline-offset:4px}
-#prompt-display .cur{color:#fff;border-left:3px solid #00ff41;animation:blink .6s step-end infinite}
-#prompt-display .pending{color:#2a2a2a}
+#prompt-display .done{color:#33d268}
+#prompt-display .err{color:#ec3750;text-decoration:underline;text-underline-offset:4px;background:rgba(236,55,80,0.15)}
+#prompt-display .cur{color:#fff;border-left:3px solid #ec3750;animation:blink .6s step-end infinite;background:rgba(255,255,255,0.05)}
+#prompt-display .pending{color:#485666}
 @keyframes blink{50%{border-left-color:transparent}}
-#inp{width:100%;border:1px solid #222;border-radius:6px;padding:12px 14px;font-size:15px;font-family:'Courier New',monospace;background:#000;color:#00ff41;resize:none;outline:none;transition:.15s;caret-color:#00ff41}
-#inp:focus{border-color:#00ff41;box-shadow:0 0 0 1px #00ff4122}
-#inp::placeholder{color:#222}
+
+#inp{width:100%;border:2px solid #252529;border-radius:8px;padding:12px 14px;font-size:16px;font-family:'Courier New',monospace;background:#050505;color:#33d268;resize:none;outline:none;transition:.15s;caret-color:#33d268}
+#inp:focus{border-color:#ec3750;box-shadow:0 0 0 1px rgba(236,55,80,0.22)}
+#inp::placeholder{color:#252529}
 #inp:disabled{opacity:0.3;cursor:default}
-.result-box{background:#000;border:1px solid #1a1a1a;border-radius:8px;padding:2rem 1.5rem;margin-bottom:1.25rem;text-align:center}
-.big-wpm{font-size:96px;font-weight:700;font-family:'Courier New',monospace;color:#00ff41;line-height:1;letter-spacing:-0.03em}
-.wpm-lbl{font-size:12px;color:#444;text-transform:uppercase;letter-spacing:0.15em;margin:8px 0 1.5rem}
-.verdict-box{font-size:13px;font-family:'Courier New',monospace;color:#555;margin-bottom:1.5rem;padding:12px 16px;border:1px solid #1a1a1a;border-radius:6px;background:#0a0a0a;line-height:1.7;text-align:left}
-.verdict-box strong{color:#00ff41;font-weight:700}
+
+/* Post-run performance analytics card */
+.result-box{background:#17171d;border:1px solid #252529;border-radius:12px;padding:2rem 1.5rem;margin-bottom:1.25rem;text-align:center}
+.big-wpm{font-size:96px;font-weight:800;font-family:'Courier New',monospace;color:#33d268;line-height:1;letter-spacing:-0.03em}
+.wpm-lbl{font-size:12px;color:#8492a6;text-transform:uppercase;letter-spacing:0.15em;margin:8px 0 1.5rem;font-weight:700}
+.verdict-box{font-size:13px;font-family:'Courier New',monospace;color:#c5d1e0;margin-bottom:1.5rem;padding:12px 16px;border:1px solid #252529;border-radius:8px;background:#050505;line-height:1.7;text-align:left}
+.verdict-box strong{color:#ec3750;font-weight:700}
 .res-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
 .save-row{display:flex;gap:8px}
-.save-row input{flex:1;border:1px solid #222;border-radius:6px;padding:10px 14px;font-size:13px;font-family:'Courier New',monospace;background:#000;color:#fff;outline:none;transition:.15s}
-.save-row input:focus{border-color:#00ff41}
-.save-row input::placeholder{color:#333}
-.sbtn{padding:10px 18px;border:1px solid #00ff41;border-radius:6px;background:#00ff41;color:#000;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:.15s;white-space:nowrap}
-.sbtn:hover{opacity:.85}
+.save-row input{flex:1;border:2px solid #252529;border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Courier New',monospace;background:#050505;color:#fff;outline:none;transition:.15s}
+.save-row input:focus{border-color:#33d268}
+.save-row input::placeholder{color:#485666}
+
+.sbtn{padding:10px 18px;border:1px solid #ec3750;border-radius:8px;background:#ec3750;color:#fff;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:.15s;white-space:nowrap}
+.sbtn:hover{background:#cc243c;border-color:#cc243c;box-shadow:0 4px 12px rgba(236,55,80,0.2)}
 .sbtn:disabled{opacity:0.5;cursor:not-allowed}
-.save-note{font-size:10px;color:#333;text-align:center;margin-top:8px}
+.save-note{font-size:10px;color:#485666;text-align:center;margin-top:8px;text-transform:uppercase;letter-spacing:0.05em}
+
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
-.btn{padding:9px 18px;border:1px solid #333;border-radius:6px;background:transparent;color:#aaa;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
-.btn:hover{border-color:#aaa;color:#fff}
-.btn.solid{background:#00ff41;color:#000;border-color:#00ff41}
-.btn.solid:hover{opacity:.8}
+.btn{padding:10px 18px;border:1px solid #252529;border-radius:8px;background:#17171d;color:#c5d1e0;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.btn:hover{border-color:#ec3750;color:#fff}
+.btn.solid{background:#33d268;color:#000;border-color:#33d268}
+.btn.solid:hover{opacity:.9;box-shadow:0 4px 12px rgba(51,210,104,0.2)}
+
+/* Leaderboard Tables styles */
 .lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.lb-hdr span{font-size:12px;color:#444;text-transform:uppercase;letter-spacing:0.1em}
-.lb-wrap{border:1px solid #1a1a1a;border-radius:8px;overflow:hidden}
+.lb-hdr span{font-size:12px;color:#8492a6;text-transform:uppercase;letter-spacing:0.1em;font-weight:700}
+.lb-wrap{border:1px solid #252529;border-radius:12px;overflow:hidden;background:#17171d}
 .lb-table{width:100%;border-collapse:collapse}
-.lb-table th{padding:10px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#444;background:#0a0a0a;border-bottom:1px solid #1a1a1a;text-align:left;font-weight:400}
-.lb-table td{padding:12px 14px;font-size:13px;color:#aaa;border-bottom:1px solid #111}
+.lb-table th{padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#8492a6;background:#050505;border-bottom:1px solid #252529;text-align:left;font-weight:700}
+.lb-table td{padding:14px 14px;font-size:13px;color:#c5d1e0;border-bottom:1px solid #252529}
 .lb-table tr:last-child td{border-bottom:none}
-.lb-table tbody tr:hover td{background:#0a0a0a}
-.wpm-td{font-weight:700;color:#00ff41}
-.rank-td{font-size:11px;width:40px}
-.diff-pill{font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid #222;color:#444;text-transform:uppercase}
-.empty-state{padding:3rem;text-align:center;color:#333;font-size:13px;line-height:2.5}
+.lb-table tbody tr:hover td{background:#252529}
+.wpm-td{font-weight:700;color:#33d268}
+.rank-td{font-size:11px;width:40px;font-weight:700}
+.diff-pill{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #252529;color:#8492a6;text-transform:uppercase;background:#050505;font-weight:700}
+.empty-state{padding:3rem;text-align:center;color:#485666;font-size:13px;line-height:2.5;font-family:'Courier New',monospace}
 .hid{display:none!important}
-footer{text-align:center;padding:1.5rem;font-size:11px;color:#333;border-top:1px solid #1a1a1a;text-transform:uppercase;letter-spacing:0.1em}
-footer strong{color:#555}
+
+footer{text-align:center;padding:2rem 1.5rem;font-size:11px;color:#485666;border-top:1px solid #1a1a1a;text-transform:uppercase;letter-spacing:0.15em;margin-top:2rem}
+footer strong{color:#ec3750;font-weight:700}
+
 @media(max-width:560px){
+  .hdr{padding-left:0;padding-top:40px}
+  .hc-flag{left:0;top:0;width:48px;height:36px}
+  .hc-flag-icon{width:24px;height:24px}
   .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sc-val{font-size:22px}
   #prompt-display{font-size:16px}
@@ -96,15 +128,21 @@ footer strong{color:#555}
 <body>
 <div id="wrap">
   <div class="hdr">
+    <a href="https://hackclub.com/" target="_blank" class="hc-flag" aria-label="Hack Club Home">
+      <svg class="hc-flag-icon" viewBox="0 0 24 24">
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+        <line x1="4" y1="22" x2="4" y2="15"/>
+      </svg>
+    </a>
     <div>
-      <div class="logo">HackaTyper<span>Hack Club — type fast or go home</span></div>
+      <div class="logo">Hacka<em>Typer</em><span>By members of Hack Club — type fast, ship code</span></div>
     </div>
     <div id="streak-area"></div>
   </div>
 
   <div class="tabs">
-    <button class="tab on" id="t-practice" onclick="goTab('practice')">Practice</button>
-    <button class="tab" id="t-leaderboard" onclick="goTab('leaderboard')">Leaderboard</button>
+    <button class="tab on" id="t-practice" onclick="goTab('practice')">Practice Terminal</button>
+    <button class="tab" id="t-leaderboard" onclick="goTab('leaderboard')">Leaderboard Matrix</button>
   </div>
 
   <div id="pane-practice">
@@ -118,24 +156,24 @@ footer strong{color:#555}
 
     <div class="orpheus" id="orpheus-zone">
       <img src="https://ca.slack-edge.com/E09V59WQY1E-UM1L1C38X-d4fb5aa08cb0-192" alt="Orpheus" />
-      <div class="orpheus-txt" id="orpheus-msg"><strong>Orpheus says:</strong> "ok hacker, prove you can type faster than I can eat a server rack. start typing to begin!"</div>
+      <div class="orpheus-txt" id="orpheus-msg"><strong>Orpheus says:</strong> "Welcome to the collective, hacker! Start typing below whenever you are ready to ship."</div>
     </div>
 
     <div class="typing-box">
       <div class="ctrl-row">
         <div class="diff-pills">
-          <button class="dp on" id="d-easy" onclick="setDiff('easy')">Easy</button>
-          <button class="dp" id="d-medium" onclick="setDiff('medium')">Medium</button>
-          <button class="dp" id="d-hard" onclick="setDiff('hard')">Hard</button>
+          <button class="dp on" id="d-easy" onclick="setDiff('easy')">Arcade</button>
+          <button class="dp" id="d-medium" onclick="setDiff('medium')">Assembly</button>
+          <button class="dp" id="d-hard" onclick="setDiff('hard')">Mainframe</button>
         </div>
         <div class="right-ctrls">
           <button class="dur-btn on" id="db-60" onclick="setDur(60)">60s</button>
           <button class="dur-btn" id="db-30" onclick="setDur(30)">30s</button>
-          <button class="new-btn" onclick="restart()">&#8635; New</button>
+          <button class="new-btn" onclick="restart()">&#8635; Respawn</button>
         </div>
       </div>
       <div id="prompt-display"></div>
-      <textarea id="inp" rows="2" placeholder="start typing here..." spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+      <textarea id="inp" rows="2" placeholder="Start typing here to trigger terminal systems..." spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
     </div>
 
     <div id="result-zone" class="hid">
@@ -149,29 +187,29 @@ footer strong{color:#555}
           <div class="sc"><div class="sc-lbl">Errors</div><div class="sc-val red" id="r-err">—</div></div>
         </div>
         <div class="save-row">
-          <input type="text" id="uname" placeholder="your hack club username..." maxlength="24"/>
-          <button class="sbtn" id="save-btn" onclick="saveScore()">Save Score</button>
+          <input type="text" id="uname" placeholder="your hack club slack username..." maxlength="24"/>
+          <button class="sbtn" id="save-btn" onclick="saveScore()">Commit Score</button>
         </div>
-        <div class="save-note" id="sync-note">scores synced live with remote datacenter</div>
+        <div class="save-note" id="sync-note">scores synced live with hack club database endpoints</div>
       </div>
       <div class="btn-row">
-        <button class="btn solid" onclick="restart()">&#8635; Try Again</button>
-        <button class="btn" onclick="goTab('leaderboard')">&#9733; Leaderboard</button>
+        <button class="btn solid" onclick="restart()">&#8635; Run Again</button>
+        <button class="btn" onclick="goTab('leaderboard')">&#9733; Inspect Leaderboard</button>
       </div>
     </div>
   </div>
 
   <div id="pane-leaderboard" class="hid">
     <div class="lb-hdr">
-      <span>Hall of Fame</span>
-      <button class="btn" style="font-size:11px;padding:6px 12px" onclick="clearLB()">&#128465; Clear All</button>
+      <span>Hall of Hackers</span>
+      <button class="btn" style="font-size:11px;padding:6px 12px" onclick="clearLB()">&#128465; Flush Database</button>
     </div>
     <div id="lb-out"></div>
   </div>
 </div>
 
 <footer>
-  Made by <strong>Hridhaan Sahay</strong> for Hack Club
+  Code compiled by <strong>hridhaan</strong> for the global <a href="https://hackclub.com" target="_blank" style="color:#ec3750; text-decoration:none; font-weight:700;">Hack Club</a> community
 </footer>
 
 <script>
@@ -180,28 +218,28 @@ const API_KEY = "$2a$10$DURyyWrx1E6Tu//vGsf/cugGvl.VekV5Y5k9wCCczCg1jJwxo2Nti";
 const ACCESS_KEY = "$2a$10$N5xltXVJ7OeXJMPZgAftquwO9BWqz4MGitzXxy8oQytKy37Xy9Xhm";
 
 const WORDBANK={
-  easy:"the quick brown fox jumps over lazy dog and then takes nap in sun hack club is best place to learn coding build cool stuff make friends every hacker starts somewhere right now not tomorrow internet made of code dreams cat videos learning type fast superpower open source software built by people who want world bit better just keep going you can do this one word at time focus breathe type ship it build things that matter be curious stay humble write code read books help others share what you know".split(" "),
-  medium:"javascript async await syntax lets write asynchronous code reads like synchronous very satisfying git commit messages explain why change not what changed future debugging best debugger rubber duck console log statements react hooks replaced class components zustand redux context typescript interfaces generics union intersection webpack vite rollup bundler transpiler polyfill closures prototype inheritance recursion memoization debounce throttle promise callback event loop microtask queue render blocking reflow repaint critical path".split(" "),
-  hard:"tail call optimization functional languages recursive constant stack frames cap theorem distributed consistency availability partition tolerance kubernetes etcd strongly consistent key value webassembly binary instruction stack virtual machine portable compilation cryptographic hash deterministic avalanche event sourcing immutable sequence database halting problem undecidable coroutine continuation monad functor applicative traversable foldable bifunctor contravariant profunctor epimorphism monomorphism endofunctor natural transformation adjunction pullback pushout".split(" ")
+  easy:"the quick brown fox jumps over lazy dog and then takes nap in sun hack club is best place to learn coding build cool stuff make friends every hacker starts somewhere right now not tomorrow internet made of code dreams cat videos learning type fast superpower open source software built by people who want world bit better just keep going you can do this one word at time focus breathe type ship it build things that matter be curious stay humble write code read books help others share what you know slack sprinkle orpheus assembling dynamic vectors inside regional nodes".split(" "),
+  medium:"javascript async await syntax lets write asynchronous code reads like synchronous very satisfying git commit messages explain why change not what changed future debugging best debugger rubber duck console log statements react hooks replaced class components zustand redux context typescript interfaces generics union intersection webpack vite rollup bundler transpiler polyfill closures prototype inheritance recursion memoization debounce throttle promise callback event loop microtask queue render blocking reflow repaint critical path markdown responsive styling elements sandbox environment repository".split(" "),
+  hard:"tail call optimization functional languages recursive constant stack frames cap theorem distributed consistency availability partition tolerance kubernetes etcd strongly consistent key value webassembly binary instruction stack virtual machine portable compilation cryptographic hash deterministic avalanche event sourcing immutable sequence database halting problem undecidable coroutine continuation monad functor applicative traversable foldable bifunctor contravariant profunctor epimorphism monomorphism endofunctor natural transformation adjudication deployment verification structural parsing runtime layout compilation".split(" ")
 };
 
 const QUIPS={
-  idle:'ok hacker, prove you can type faster than I can eat a server rack. start typing to begin!',
-  started:'go go go! orpheus is watching every keystroke. rawr.',
-  low:'ONLY 10 SECONDS LEFT. orpheus is sweating. type FASTER.',
-  done_bad:'...orpheus has seen faster typing from a cat walking on a keyboard. keep practicing!',
-  done_ok:'not bad! orpheus approves. keep grinding hacker.',
-  done_good:'orpheus is impressed! proper hacker speed. you may pet the dino.',
-  done_great:'RAWR! post this in hack club slack immediately. legendary status unlocked.'
+  idle:'Welcome to the collective, hacker! Start typing below whenever you are ready to ship.',
+  started:'Go go go! Orpheus is watching every single keystroke. Keep up the high bandwidth!',
+  low:'ONLY 10 SECONDS LEFT. The internal mainframe relays are getting warm. Type faster!',
+  done_bad:'Orpheus has seen faster typing configurations from an unconfigured macro sequence. Keep practicing!',
+  done_ok:'Decent engineering output! Orpheus approves of this deployment. Keep pushing.',
+  done_good:'Excellent compilation speed! Proper hacker velocity. You may pet the Dino now.',
+  done_great:'Legendary status! Post this screenshot into the Hack Club Slack directory immediately.'
 };
 
 const VERDICTS=w=>{
-  if(w<20)return'Keep going — everyone starts somewhere. Orpheus believes in you.';
-  if(w<35)return'Solid start. Typing at "thinking while I type" speed. More reps.';
-  if(w<50)return'Above average! Hack Club vibes. Real keyboard energy.';
-  if(w<70)return'Fast! Orpheus is genuinely impressed. Hall of Hackers material.';
-  if(w<90)return'Very fast. Are you secretly a keyboard shortcut?';
-  return'LEGENDARY. Orpheus has retired. You ARE the dinosaur now.';
+  if(w<20)return'Every great engineer starts at line one. Orpheus completely believes in your trajectory.';
+  if(w<35)return'Solid foundational output. You are typing at "thinking while writing code" speed.';
+  if(w<50)return'Above standard parameters! Pure Hack Club high-energy output right here.';
+  if(w<70)return'Blazing fast metrics! Orpheus is genuinely impressed. Hall of Hackers prospective.';
+  if(w<90)return'Extremely high structural bandwidth. Are you a hardware macro shortcut?';
+  return'ABSOLUTELY PHENOMENAL. Systems overloaded. You are the structural system architect now.';
 };
 
 let diff='easy',dur=60,timeLeft=60,started=false,finished=false,t0=null,ticker=null;
@@ -290,9 +328,8 @@ function endTest(){
   else{streak=0;persistStreak();}
   updateStreak();
   
-  // Re-enable save buttons/states upon new test end
   document.getElementById('save-btn').disabled = false;
-  document.getElementById('sync-note').textContent = "scores synced live with remote datacenter";
+  document.getElementById('sync-note').textContent = "scores synced live with hack club database endpoints";
 }
 
 function orpheus(key){
@@ -372,9 +409,7 @@ function setDur(d){
   restart();
 }
 
-// Fetch Leaderboard data dynamically from JSONBin
 async function loadScores(){
-  const syncNote = document.getElementById('sync-note');
   try{
     const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
       method: 'GET',
@@ -394,7 +429,6 @@ async function loadScores(){
   updateStreak();
 }
 
-// Push local variables up to JSONBin database
 async function persistRemote(customList) {
   const dataToSend = customList || scores;
   try {
@@ -416,7 +450,7 @@ function persistStreak(){try{localStorage.setItem('ht-streak',String(streak));}c
 
 function updateStreak(){
   const el=document.getElementById('streak-area');
-  if(streak>=2){el.textContent=streak+' run streak';el.style.color='#00ff41';}
+  if(streak>=2){el.textContent=streak+' consecutive runs';el.style.color='#33d268';}
   else{el.textContent='';el.style.color='#444';}
 }
 
@@ -428,12 +462,11 @@ async function saveScore(){
   const syncNote = document.getElementById('sync-note');
   
   saveBtn.disabled = true;
-  syncNote.textContent = "Syncing with grid datacenter...";
+  syncNote.textContent = "Syncing with cloud network nodes...";
 
   const wpm=parseInt(document.getElementById('r-wpm').textContent)||0;
   const acc=document.getElementById('r-acc').textContent;
   
-  // Reload fresh profiles from cloud immediately before insertion to avoid overwriting concurrent submissions
   await loadScores();
 
   scores.push({name:n,wpm,acc,diff,dur,ts:Date.now()});
@@ -447,7 +480,7 @@ async function saveScore(){
 }
 
 async function clearLB(){
-  if(!confirm('Clear all structural scoreboard array parameters remotely?'))return;
+  if(!confirm('Flush structural score data remotely across cloud infrastructure?'))return;
   scores=[];
   await persistRemote([]);
   renderLB();
@@ -456,20 +489,20 @@ async function clearLB(){
 function renderLB(){
   const el=document.getElementById('lb-out');
   if(!scores.length){
-    el.innerHTML='<div class="empty-state">no scores yet.<br>finish a test and save your username to appear here.</div>';
+    el.innerHTML='<div class="empty-state">No recorded score vectors found.<br>Finish a practice terminal test to log your node signature.</div>';
     return;
   }
   const medals=['1st','2nd','3rd'];
-  const medalColors=['#00ff41','#aaaaaa','#cc8844'];
+  const medalColors=['#ec3750','#33d268','#ff8c00'];
   el.innerHTML=`<div class="lb-wrap"><table class="lb-table">
-    <thead><tr><th>#</th><th>Hacker</th><th>WPM</th><th>Acc</th><th>Mode</th><th>When</th></tr></thead>
+    <thead><tr><th>Pos</th><th>Hacker</th><th>WPM</th><th>Acc</th><th>Mode</th><th>When</th></tr></thead>
     <tbody>${scores.slice(0,20).map((s,i)=>`<tr>
-      <td class="rank-td" style="color:${medalColors[i]||'#333'}">${medals[i]||('#'+(i+1))}</td>
-      <td style="color:${i<3?'#fff':'#aaa'};font-weight:${i<3?700:400}">${s.name}</td>
+      <td class="rank-td" style="color:${medalColors[i]||'#485666'}">${medals[i]||('#'+(i+1))}</td>
+      <td style="color:${i<3?'#fff':'#c5d1e0'};font-weight:${i<3?700:400}">${s.name}</td>
       <td class="wpm-td">${s.wpm}</td>
-      <td style="color:#aaa">${s.acc}</td>
+      <td style="color:#c5d1e0">${s.acc}</td>
       <td><span class="diff-pill">${s.diff} ${s.dur}s</span></td>
-      <td style="color:#333">${timeAgo(s.ts)}</td>
+      <td style="color:#8492a6">${timeAgo(s.ts)}</td>
     </tr>`).join('')}
     </tbody></table></div>`;
 }
