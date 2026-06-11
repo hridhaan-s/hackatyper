@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HackaTyper</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;min-height:100vh;font-family:'Courier New',Courier,monospace}
+#wrap{background:#000;padding:1.5rem 1rem;max-width:760px;margin:0 auto;min-height:100vh}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a}
+.logo{font-size:22px;font-weight:700;color:#00ff41;letter-spacing:0.05em}
+.logo span{color:#555;font-weight:400;font-size:11px;display:block;letter-spacing:0.15em;margin-top:3px;text-transform:uppercase}
+#streak-area{font-size:12px;color:#444;font-family:'Courier New',monospace}
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid #222;border-radius:6px;overflow:hidden}
+.tab{flex:1;padding:9px 0;font-size:12px;font-family:'Courier New',monospace;background:transparent;color:#555;border:none;cursor:pointer;border-right:1px solid #222;letter-spacing:0.05em;transition:.15s;text-transform:uppercase;font-weight:700}
+.tab:last-child{border-right:none}
+.tab.on{background:#00ff41;color:#000}
+.stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
+.sc{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:14px 12px;text-align:center}
+.sc-lbl{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.sc-val{font-size:28px;font-weight:700;color:#fff;font-family:'Courier New',monospace;line-height:1}
+.sc-val.green{color:#00ff41}
+.sc-val.red{color:#ff4444}
+.prog-wrap{height:3px;background:#111;border-radius:2px;margin-bottom:1.5rem;overflow:hidden}
+.prog-fill{height:100%;background:#00ff41;border-radius:2px;transition:width .1s linear;width:0%}
+.orpheus{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1px solid #1a1a1a;border-radius:6px;background:#0a0a0a;margin-bottom:1rem}
+.orpheus img{width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;border:1px solid #1a1a1a}
+.orpheus-txt{font-size:12px;color:#444;font-family:'Courier New',monospace;line-height:1.7;padding-top:4px}
+.orpheus-txt strong{color:#00ff41;font-weight:700}
+.typing-box{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:1.5rem;margin-bottom:1.25rem}
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.diff-pills{display:flex;gap:6px}
+.dp{padding:5px 14px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.dp.on{background:#00ff41;color:#000;border-color:#00ff41}
+.dp:hover:not(.on){border-color:#555;color:#aaa}
+.right-ctrls{display:flex;align-items:center;gap:6px}
+.dur-btn{padding:5px 12px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.dur-btn.on{background:#fff;color:#000;border-color:#fff}
+.dur-btn:hover:not(.on){border-color:#555;color:#aaa}
+.new-btn{padding:5px 12px;border-radius:4px;border:1px solid #333;background:transparent;color:#555;font-size:11px;font-family:'Courier New',monospace;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.new-btn:hover{border-color:#555;color:#aaa}
+#prompt-display{font-size:20px;line-height:2.1;font-family:'Courier New',monospace;word-break:break-word;user-select:none;margin-bottom:1.25rem;min-height:88px}
+#prompt-display .done{color:#00ff41}
+#prompt-display .err{color:#ff4444;text-decoration:underline;text-underline-offset:4px}
+#prompt-display .cur{color:#fff;border-left:3px solid #00ff41;animation:blink .6s step-end infinite}
+#prompt-display .pending{color:#2a2a2a}
+@keyframes blink{50%{border-left-color:transparent}}
+#inp{width:100%;border:1px solid #222;border-radius:6px;padding:12px 14px;font-size:15px;font-family:'Courier New',monospace;background:#000;color:#00ff41;resize:none;outline:none;transition:.15s;caret-color:#00ff41}
+#inp:focus{border-color:#00ff41;box-shadow:0 0 0 1px #00ff4122}
+#inp::placeholder{color:#222}
+#inp:disabled{opacity:0.3;cursor:default}
+.result-box{background:#000;border:1px solid #1a1a1a;border-radius:8px;padding:2rem 1.5rem;margin-bottom:1.25rem;text-align:center}
+.big-wpm{font-size:96px;font-weight:700;font-family:'Courier New',monospace;color:#00ff41;line-height:1;letter-spacing:-0.03em}
+.wpm-lbl{font-size:12px;color:#444;text-transform:uppercase;letter-spacing:0.15em;margin:8px 0 1.5rem}
+.verdict-box{font-size:13px;font-family:'Courier New',monospace;color:#555;margin-bottom:1.5rem;padding:12px 16px;border:1px solid #1a1a1a;border-radius:6px;background:#0a0a0a;line-height:1.7;text-align:left}
+.verdict-box strong{color:#00ff41;font-weight:700}
+.res-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
+.save-row{display:flex;gap:8px}
+.save-row input{flex:1;border:1px solid #222;border-radius:6px;padding:10px 14px;font-size:13px;font-family:'Courier New',monospace;background:#000;color:#fff;outline:none;transition:.15s}
+.save-row input:focus{border-color:#00ff41}
+.save-row input::placeholder{color:#333}
+.sbtn{padding:10px 18px;border:1px solid #00ff41;border-radius:6px;background:#00ff41;color:#000;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:.15s;white-space:nowrap}
+.sbtn:hover{opacity:.85}
+.save-note{font-size:10px;color:#333;text-align:center;margin-top:8px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 18px;border:1px solid #333;border-radius:6px;background:transparent;color:#aaa;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+.btn:hover{border-color:#aaa;color:#fff}
+.btn.solid{background:#00ff41;color:#000;border-color:#00ff41}
+.btn.solid:hover{opacity:.8}
+.lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.lb-hdr span{font-size:12px;color:#444;text-transform:uppercase;letter-spacing:0.1em}
+.lb-wrap{border:1px solid #1a1a1a;border-radius:8px;overflow:hidden}
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{padding:10px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#444;background:#0a0a0a;border-bottom:1px solid #1a1a1a;text-align:left;font-weight:400}
+.lb-table td{padding:12px 14px;font-size:13px;color:#aaa;border-bottom:1px solid #111}
+.lb-table tr:last-child td{border-bottom:none}
+.lb-table tbody tr:hover td{background:#0a0a0a}
+.wpm-td{font-weight:700;color:#00ff41}
+.rank-td{font-size:11px;width:40px}
+.diff-pill{font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid #222;color:#444;text-transform:uppercase}
+.empty-state{padding:3rem;text-align:center;color:#333;font-size:13px;line-height:2.5}
+.hid{display:none!important}
+@media(max-width:560px){
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sc-val{font-size:22px}
+  #prompt-display{font-size:16px}
+  .big-wpm{font-size:64px}
+  .res-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div class="hdr">
+    <div>
+      <div class="logo">HackaTyper<span> TYPE FAST and MAKE ORPHEUS PROUD > </span></div>
+    </div>
+    <div id="streak-area"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="t-practice" onclick="goTab('practice')">Practice</button>
+    <button class="tab" id="t-leaderboard" onclick="goTab('leaderboard')">Leaderboard</button>
+  </div>
+
+  <div id="pane-practice">
+    <div class="stats-row">
+      <div class="sc"><div class="sc-lbl">WPM</div><div class="sc-val" id="s-wpm">—</div></div>
+      <div class="sc"><div class="sc-lbl">Accuracy</div><div class="sc-val" id="s-acc">—</div></div>
+      <div class="sc"><div class="sc-lbl">Time Left</div><div class="sc-val" id="s-time">60</div></div>
+      <div class="sc"><div class="sc-lbl">Errors</div><div class="sc-val" id="s-err">0</div></div>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+
+    <div class="orpheus" id="orpheus-zone">
+      <img src="https://ca.slack-edge.com/E09V59WQY1E-UM1L1C38X-d4fb5aa08cb0-192" alt="Orpheus" />
+      <div class="orpheus-txt" id="orpheus-msg"><strong>Orpheus says:</strong> "ok hacker, prove you can type faster than I can eat a server rack. start typing to begin!"</div>
+    </div>
+
+    <div class="typing-box">
+      <div class="ctrl-row">
+        <div class="diff-pills">
+          <button class="dp on" id="d-easy" onclick="setDiff('easy')">Easy</button>
+          <button class="dp" id="d-medium" onclick="setDiff('medium')">Medium</button>
+          <button class="dp" id="d-hard" onclick="setDiff('hard')">Hard</button>
+        </div>
+        <div class="right-ctrls">
+          <button class="dur-btn on" id="db-60" onclick="setDur(60)">60s</button>
+          <button class="dur-btn" id="db-30" onclick="setDur(30)">30s</button>
+          <button class="new-btn" onclick="restart()">&#8635; New</button>
+        </div>
+      </div>
+      <div id="prompt-display"></div>
+      <textarea id="inp" rows="2" placeholder="start typing here..." spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+    </div>
+
+    <div id="result-zone" class="hid">
+      <div class="result-box">
+        <div class="big-wpm" id="r-wpm">0</div>
+        <div class="wpm-lbl">words per minute</div>
+        <div class="verdict-box" id="r-verdict"></div>
+        <div class="res-grid">
+          <div class="sc"><div class="sc-lbl">Accuracy</div><div class="sc-val green" id="r-acc">—</div></div>
+          <div class="sc"><div class="sc-lbl">Correct Chars</div><div class="sc-val green" id="r-cc">—</div></div>
+          <div class="sc"><div class="sc-lbl">Errors</div><div class="sc-val red" id="r-err">—</div></div>
+        </div>
+        <div class="save-row">
+          <input type="text" id="uname" placeholder="your hack club username..." maxlength="24"/>
+          <button class="sbtn" onclick="saveScore()">Save Score</button>
+        </div>
+        <div class="save-note">scores stored locally in your browser</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn solid" onclick="restart()">&#8635; Try Again</button>
+        <button class="btn" onclick="goTab('leaderboard')">&#9733; Leaderboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-leaderboard" class="hid">
+    <div class="lb-hdr">
+      <span>Hall of Fame</span>
+      <button class="btn" style="font-size:11px;padding:6px 12px" onclick="clearLB()">&#128465; Clear All</button>
+    </div>
+    <div id="lb-out"></div>
+  </div>
+</div>
+
+<script>
+const WORDBANK={
+  easy:"hack club hackers ship projects every day orpheus loves dinosaurs and pull requests slack is full of builders not talkers ship it saturday build fast learn faster code share create repeat open source changes lives write code make friends launch weird ideas arcade sprig ysws stickers laptops pizza and shipping projects rawr dino approved hacker energy commit push deploy celebrate then start again".split(" "),
+
+  medium:"hack club encourages teenagers to build real things instead of collecting tutorials every shipped project teaches more than another hour of watching videos arcade projects become websites games tools experiments and sometimes complete chaos orpheus accidentally reviewed a pull request while eating a keyboard hackers gather in slack share progress ask questions solve bugs and celebrate wins shipping beats perfection every single time".split(" "),
+
+  hard:"ysws rewards initiative because action compounds faster than planning technical debt accumulates when abandoned side projects evolve without maintenance distributed hackathons create spontaneous collaboration across time zones recursive debugging sessions occasionally reveal that the original typo existed inside configuration rather than application logic legendary hackers optimize workflows automate repetition document discoveries and continuously iterate toward increasingly ambitious outcomes".split(" ")
+};
+
+const QUIPS={
+  idle:'ok hacker, prove you can type faster than I can eat a server rack. start typing to begin!',
+  started:'go go go! orpheus is watching every keystroke. rawr.',
+  low:'ONLY 10 SECONDS LEFT. orpheus is sweating. type FASTER.',
+  done_bad:'...orpheus has seen faster typing from a cat walking on a keyboard. keep practicing!',
+  done_ok:'not bad! orpheus approves. keep grinding hacker.',
+  done_good:'orpheus is impressed! proper hacker speed. you may pet the dino.',
+  done_great:'RAWR! post this in hack club slack immediately. legendary status unlocked.'
+};
+
+const VERDICTS=w=>{
+  if(w<20)return'Keep going — everyone starts somewhere. Orpheus believes in you.';
+  if(w<35)return'Solid start. Typing at "thinking while I type" speed. More reps.';
+  if(w<50)return'Above average! Hack Club vibes. Real keyboard energy.';
+  if(w<70)return'Fast! Orpheus is genuinely impressed. Hall of Hackers material.';
+  if(w<90)return'Very fast. Are you secretly a keyboard shortcut?';
+  return'LEGENDARY. Orpheus has retired. You ARE the dinosaur now.';
+};
+
+let diff='easy',dur=60,timeLeft=60,started=false,finished=false,t0=null,ticker=null;
+let words=[],wordIdx=0,typed='',totalCorrect=0,totalErrors=0;
+let scores=[],streak=0;
+
+function pickWords(n){
+  const bank=WORDBANK[diff],arr=[];
+  for(let i=0;i<n;i++)arr.push(bank[Math.floor(Math.random()*bank.length)]);
+  return arr;
+}
+
+function initWords(){
+  words=pickWords(150);
+  wordIdx=0;typed='';totalCorrect=0;totalErrors=0;
+}
+
+function renderPrompt(){
+  const from=Math.max(0,wordIdx-2);
+  const to=Math.min(words.length,wordIdx+35);
+  let h='';
+  for(let w=from;w<to;w++){
+    const word=words[w];
+    if(w<wordIdx){
+      for(let c=0;c<word.length;c++)h+=`<span class="done">${esc(word[c])}</span>`;
+      h+=`<span class="done"> </span>`;
+    } else if(w===wordIdx){
+      for(let c=0;c<word.length;c++){
+        if(c<typed.length) h+=`<span class="${typed[c]===word[c]?'done':'err'}">${esc(word[c])}</span>`;
+        else if(c===typed.length) h+=`<span class="cur">${esc(word[c])}</span>`;
+        else h+=`<span class="pending">${esc(word[c])}</span>`;
+      }
+      if(typed.length>=word.length) h+=`<span class="cur"> </span>`;
+      else h+=`<span class="pending"> </span>`;
+    } else {
+      for(let c=0;c<word.length;c++)h+=`<span class="pending">${esc(word[c])}</span>`;
+      h+=`<span class="pending"> </span>`;
+    }
+  }
+  if(words.length-to<15) words=words.concat(pickWords(50));
+  document.getElementById('prompt-display').innerHTML=h;
+}
+
+function esc(ch){return ch==='<'?'&lt;':ch==='>'?'&gt;':ch==='&'?'&amp;':ch;}
+
+function calcWPM(){
+  if(!started||!t0)return 0;
+  const mins=(Date.now()-t0)/60000;
+  return mins>0?Math.round(totalCorrect/5/mins):0;
+}
+
+function calcAcc(){
+  const total=totalCorrect+totalErrors;
+  return total>0?Math.round(totalCorrect/total*100):100;
+}
+
+function updateLive(){
+  const wpm=calcWPM(),acc=calcAcc();
+  const wpmEl=document.getElementById('s-wpm');
+  wpmEl.textContent=started?wpm:'—';
+  wpmEl.className='sc-val'+(started?' green':'');
+  document.getElementById('s-acc').textContent=started?(acc+'%'):'—';
+  document.getElementById('s-err').textContent=totalErrors;
+  document.getElementById('s-err').className='sc-val'+(totalErrors>5?' red':'');
+  const pct=Math.min(100,Math.round((dur-timeLeft)/dur*100));
+  document.getElementById('prog').style.width=pct+'%';
+}
+
+function endTest(){
+  if(finished)return;
+  finished=true;
+  clearInterval(ticker);
+  document.getElementById('inp').disabled=true;
+  const wpm=calcWPM(),acc=calcAcc();
+  document.getElementById('r-wpm').textContent=wpm;
+  document.getElementById('r-acc').textContent=acc+'%';
+  document.getElementById('r-cc').textContent=totalCorrect;
+  document.getElementById('r-err').textContent=totalErrors;
+  document.getElementById('r-verdict').innerHTML='<strong>verdict:</strong> '+VERDICTS(wpm);
+  document.getElementById('result-zone').classList.remove('hid');
+  document.getElementById('s-time').textContent='0';
+  document.getElementById('s-time').className='sc-val red';
+  const key=wpm>=90?'done_great':wpm>=60?'done_good':wpm>=35?'done_ok':'done_bad';
+  orpheus(key);
+  if(wpm>=50){streak++;persistStreak();}
+  else{streak=0;persistStreak();}
+  updateStreak();
+}
+
+function orpheus(key){
+  document.getElementById('orpheus-msg').innerHTML='<strong>Orpheus says:</strong> "'+QUIPS[key]+'"';
+}
+
+function restart(){
+  clearInterval(ticker);
+  timeLeft=dur;started=false;finished=false;t0=null;
+  initWords();
+  document.getElementById('s-wpm').textContent='—';
+  document.getElementById('s-wpm').className='sc-val';
+  document.getElementById('s-acc').textContent='—';
+  document.getElementById('s-err').textContent='0';
+  document.getElementById('s-err').className='sc-val';
+  document.getElementById('s-time').textContent=dur;
+  document.getElementById('s-time').className='sc-val';
+  document.getElementById('prog').style.width='0%';
+  document.getElementById('result-zone').classList.add('hid');
+  const inp=document.getElementById('inp');
+  inp.value='';inp.disabled=false;inp.focus();
+  orpheus('idle');
+  renderPrompt();
+}
+
+document.getElementById('inp').addEventListener('input',function(){
+  if(finished)return;
+  const val=this.value;
+  if(!started&&val.length>0){
+    started=true;t0=Date.now();
+    orpheus('started');
+    ticker=setInterval(()=>{
+      timeLeft--;
+      document.getElementById('s-time').textContent=timeLeft;
+      if(timeLeft<=10){
+        document.getElementById('s-time').className='sc-val red';
+        orpheus('low');
+      }
+      updateLive();
+      if(timeLeft<=0)endTest();
+    },1000);
+  }
+  if(val.endsWith(' ')){
+    const attempt=val.trim();
+    const target=words[wordIdx];
+    const len=Math.max(attempt.length,target.length);
+    for(let i=0;i<len;i++){
+      if(i<attempt.length&&i<target.length&&attempt[i]===target[i])totalCorrect++;
+      else totalErrors++;
+    }
+    wordIdx++;typed='';this.value='';
+    renderPrompt();
+  } else {
+    typed=val;renderPrompt();
+  }
+  updateLive();
+});
+
+document.getElementById('inp').addEventListener('keydown',function(e){
+  if(e.key==='Backspace'&&this.value===''&&wordIdx>0){
+    e.preventDefault();
+    wordIdx--;typed=words[wordIdx];this.value=typed;
+    renderPrompt();
+  }
+});
+
+function setDiff(d){
+  diff=d;
+  ['easy','medium','hard'].forEach(x=>document.getElementById('d-'+x).className='dp'+(x===d?' on':''));
+  restart();
+}
+
+function setDur(d){
+  dur=d;timeLeft=d;
+  [30,60].forEach(x=>document.getElementById('db-'+x).className='dur-btn'+(x===d?' on':''));
+  document.getElementById('s-time').textContent=d;
+  restart();
+}
+
+function loadScores(){
+  try{const r=localStorage.getItem('ht-scores');if(r)scores=JSON.parse(r);}catch(e){scores=[];}
+  try{streak=parseInt(localStorage.getItem('ht-streak'))||0;}catch(e){}
+  updateStreak();
+}
+
+function persist(){try{localStorage.setItem('ht-scores',JSON.stringify(scores));}catch(e){}}
+function persistStreak(){try{localStorage.setItem('ht-streak',String(streak));}catch(e){}}
+
+function updateStreak(){
+  const el=document.getElementById('streak-area');
+  if(streak>=2){el.textContent=streak+' run streak';el.style.color='#00ff41';}
+  else{el.textContent='';el.style.color='#444';}
+}
+
+function saveScore(){
+  const n=document.getElementById('uname').value.trim();
+  if(!n){document.getElementById('uname').focus();return;}
+  const wpm=parseInt(document.getElementById('r-wpm').textContent)||0;
+  const acc=document.getElementById('r-acc').textContent;
+  scores.push({name:n,wpm,acc,diff,dur,ts:Date.now()});
+  scores.sort((a,b)=>b.wpm-a.wpm);
+  if(scores.length>50)scores=scores.slice(0,50);
+  persist();
+  document.getElementById('uname').value='';
+  goTab('leaderboard');
+}
+
+function clearLB(){
+  if(!confirm('Clear all scores?'))return;
+  scores=[];persist();renderLB();
+}
+
+function renderLB(){
+  const el=document.getElementById('lb-out');
+  if(!scores.length){
+    el.innerHTML='<div class="empty-state">no scores yet.<br>finish a test and save your username to appear here.</div>';
+    return;
+  }
+  const medals=['1st','2nd','3rd'];
+  const medalColors=['#00ff41','#aaaaaa','#cc8844'];
+  el.innerHTML=`<div class="lb-wrap"><table class="lb-table">
+    <thead><tr><th>#</th><th>Hacker</th><th>WPM</th><th>Acc</th><th>Mode</th><th>When</th></tr></thead>
+    <tbody>${scores.slice(0,20).map((s,i)=>`<tr>
+      <td class="rank-td" style="color:${medalColors[i]||'#333'}">${medals[i]||('#'+(i+1))}</td>
+      <td style="color:${i<3?'#fff':'#aaa'};font-weight:${i<3?700:400}">${s.name}</td>
+      <td class="wpm-td">${s.wpm}</td>
+      <td style="color:#aaa">${s.acc}</td>
+      <td><span class="diff-pill">${s.diff} ${s.dur}s</span></td>
+      <td style="color:#333">${timeAgo(s.ts)}</td>
+    </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+function timeAgo(ts){
+  const d=Math.floor((Date.now()-ts)/1000);
+  if(d<60)return'just now';
+  if(d<3600)return Math.floor(d/60)+'m ago';
+  if(d<86400)return Math.floor(d/3600)+'h ago';
+  return Math.floor(d/86400)+'d ago';
+}
+
+function goTab(t){
+  document.getElementById('pane-practice').classList.toggle('hid',t!=='practice');
+  document.getElementById('pane-leaderboard').classList.toggle('hid',t!=='leaderboard');
+  document.getElementById('t-practice').className='tab'+(t==='practice'?' on':'');
+  document.getElementById('t-leaderboard').className='tab'+(t==='leaderboard'?' on':'');
+  if(t==='leaderboard')renderLB();
+}
+
+loadScores();restart();
+</script>
+</body>
+</html>
