@@ -12,11 +12,10 @@
 html,body{background:#050505;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";display:flex;flex-direction:column;color:#fff}
 #wrap{background:#050505;padding:1.5rem 1rem;max-width:760px;margin:0 auto;width:100%;flex:1}
 
-/* Brand Header with dynamic CSS Hack Club Flag */
-.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a;position:relative;padding-left:70px}
-.hc-flag {position:absolute;left:0;top:-24px;width:56px;height:48px;background:#ec3750;border-bottom-left-radius:8px;border-bottom-right-radius:8px;transition:transform 0.2s ease-in-out;transform-origin:top center;display:flex;align-items:center;justify-content:center}
-.hc-flag:hover {transform:rotate(5deg) scale(1.05)}
-.hc-flag-icon {width:32px;height:32px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+/* Brand Header with Standalone Hack Club Flag asset */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a;position:relative;padding-left:140px;min-height:70px}
+.hc-flag-standalone {position:absolute;left:0;top:-24px;width:120px;z-index:10;transition:transform 0.2s ease-in-out;transform-origin:top left}
+.hc-flag-standalone:hover {transform:rotate(4deg) scale(1.03)}
 .logo{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.02em;font-family:inherit}
 .logo em{color:#ec3750;font-style:normal}
 .logo span{color:#8492a6;font-weight:500;font-size:12px;font-family:'Courier New',monospace;display:block;letter-spacing:0.05em;margin-top:2px;text-transform:none}
@@ -114,9 +113,8 @@ footer{text-align:center;padding:2rem 1.5rem;font-size:11px;color:#485666;border
 footer strong{color:#ec3750;font-weight:700}
 
 @media(max-width:560px){
-  .hdr{padding-left:0;padding-top:40px}
-  .hc-flag{left:0;top:0;width:48px;height:36px}
-  .hc-flag-icon{width:24px;height:24px}
+  .hdr{padding-left:0;padding-top:60px}
+  .hc-flag-standalone{left:0;top:-16px;width:90px}
   .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sc-val{font-size:22px}
   #prompt-display{font-size:16px}
@@ -128,11 +126,8 @@ footer strong{color:#ec3750;font-weight:700}
 <body>
 <div id="wrap">
   <div class="hdr">
-    <a href="https://hackclub.com/" target="_blank" class="hc-flag" aria-label="Hack Club Home">
-      <svg class="hc-flag-icon" viewBox="0 0 24 24">
-        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-        <line x1="4" y1="22" x2="4" y2="15"/>
-      </svg>
+    <a href="https://hackclub.com/" target="_blank" aria-label="Hack Club Home">
+      <img src="https://assets.hackclub.com/flag-standalone.svg" alt="Hack Club Flag" class="hc-flag-standalone" />
     </a>
     <div>
       <div class="logo">Hacka<em>Typer</em><span>By members of Hack Club — type fast, ship code</span></div>
@@ -202,7 +197,6 @@ footer strong{color:#ec3750;font-weight:700}
   <div id="pane-leaderboard" class="hid">
     <div class="lb-hdr">
       <span>Hall of Hackers</span>
-      <button class="btn" style="font-size:11px;padding:6px 12px" onclick="clearLB()">&#128465; Flush Database</button>
     </div>
     <div id="lb-out"></div>
   </div>
@@ -477,13 +471,6 @@ async function saveScore(){
   
   document.getElementById('uname').value='';
   goTab('leaderboard');
-}
-
-async function clearLB(){
-  if(!confirm('Flush structural score data remotely across cloud infrastructure?'))return;
-  scores=[];
-  await persistRemote([]);
-  renderLB();
 }
 
 function renderLB(){
